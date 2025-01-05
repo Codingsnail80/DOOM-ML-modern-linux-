@@ -6,7 +6,7 @@ The next command you will need to run is:
 find / -name "*.wad" 2>/dev/null
 this command will give you a list of the installed wad files on  your system, you want the doom1.wad file, you will need this later to play the game so either copy it to a more memorable location or just come back to this command later.
 Now you will need to actually compile the code. So your next step is to clone this repository onto your computer, for this you will either need to download the zip file or use the command:
-git clone <the url for the project>
+git clone https://github.com/Codingsnail80/DOOM-ML-modern-linux-.git
 if you dont already have git installed install it with:
 sudo apt install git
 once you have the it downloaded you should see a folder called DOOM, in that folder there is another folder called linuxdoom-1.10 navigate into that folder.
