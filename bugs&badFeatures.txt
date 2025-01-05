@@ -1,0 +1,4 @@
+Currently there are some bugs with the code including the down arrow key causes the player to accelerate very fast. Also "," causes the player to strafe fast.
+The audio also needs to be fixed.
+The screen size is honestly terrible and needs to be changed later.
+Also I would like there to be movement with the wasd keys and mouse movement instead of arrow keys.
