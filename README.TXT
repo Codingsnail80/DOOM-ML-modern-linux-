@@ -26,4 +26,4 @@ this command tells the game to use the window we just made and you will need to 
 ./linuxxdoom
 If everything went correctly then you should see the game on the window we made earlier. If not refer back to previou steps.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Cretit goes to Diego Crespo for writing an artical documenting the process of porting Doom to linux, I used his tweaks to the games code to acheive this. Here is his article: https://www.deusinmachina.net/p/lets-compile-linux-doom
+Cretit goes to Diego Crespo for writing an artical documenting the process of porting Doom to linux, I used his tweaks and some of my own to the games code to acheive this. Here is his article: https://www.deusinmachina.net/p/lets-compile-linux-doom
