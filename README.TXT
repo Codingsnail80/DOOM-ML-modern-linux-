@@ -1,81 +1,16 @@
-
-Here it is, at long last.  The DOOM source code is released for your
-non-profit use.  You still need real DOOM data to work with this code.
-If you don't actually own a real copy of one of the DOOMs, you should
-still be able to find them at software stores.
-
-Many thanks to Bernd Kreimeier for taking the time to clean up the
-project and make sure that it actually works.  Projects tends to rot if
-you leave it alone for a few years, and it takes effort for someone to
-deal with it again.
-
-The bad news:  this code only compiles and runs on linux.  We couldn't
-release the dos code because of a copyrighted sound library we used
-(wow, was that a mistake -- I write my own sound code now), and I
-honestly don't even know what happened to the port that microsoft did
-to windows.
-
-Still, the code is quite portable, and it should be straightforward to
-bring it up on just about any platform.
-
-I wrote this code a long, long time ago, and there are plenty of things
-that seem downright silly in retrospect (using polar coordinates for
-clipping comes to mind), but overall it should still be a usefull base
-to experiment and build on.
-
-The basic rendering concept -- horizontal and vertical lines of constant
-Z with fixed light shading per band was dead-on, but the implementation
-could be improved dramatically from the original code if it were
-revisited.  The way the rendering proceded from walls to floors to
-sprites could be collapsed into a single front-to-back walk of the bsp
-tree to collect information, then draw all the contents of a subsector
-on the way back up the tree.  It requires treating floors and ceilings
-as polygons, rather than just the gaps between walls, and it requires
-clipping sprite billboards into subsector fragments, but it would be
-The Right Thing.
-
-The movement and line of sight checking against the lines is one of the
-bigger misses that I look back on.  It is messy code that had some
-failure cases, and there was a vastly simpler (and faster) solution
-sitting in front of my face.  I used the BSP tree for rendering things,
-but I didn't realize at the time that it could also be used for
-environment testing.  Replacing the line of sight test with a bsp line
-clip would be pretty easy.  Sweeping volumes for movement gets a bit
-tougher, and touches on many of the challenges faced in quake / quake2
-with edge bevels on polyhedrons.
-
-Some project ideas:
-
-Port it to your favorite operating system.
-
-Add some rendering features -- transparency, look up / down, slopes,
-etc.
-
-Add some game features -- weapons, jumping, ducking, flying, etc.
-
-Create a packet server based internet game.
-
-Create a client / server based internet game.
-
-Do a 3D accelerated version.  On modern hardware (fast pentium + 3DFX)
-you probably wouldn't even need to be clever -- you could just draw the
-entire level and get reasonable speed.  With a touch of effort, it should
-easily lock at 60 fps (well, there are some issues with DOOM's 35 hz
-timebase...).  The biggest issues would probably be the non-power of two
-texture sizes and the walls composed of multiple textures.
-
-
-I don't have a real good guess at how many people are going to be
-playing with this, but if significant projects are undertaken, it would
-be cool to see a level of community cooperation.  I know that most early
-projects are going to be rough hacks done in isolation, but I would be
-very pleased to see a coordinated 'net release of an improved, backwards
-compatable version of DOOM on multiple platforms next year.
-
-Have fun.
-
-John Carmack
-12-23-97
-
-Copyright (c) ZeniMax Media Inc.
-Licensed under the GNU General Public License 2.0.
+This is a small port of the original doom to a modern linux distro, I did not include the wad files neccesary to play the game you will have to get those yourself.
+However if you are on a debian based linux distro (that includes ubuntu and raspberry pi os) you can install a package that gives you the doom1.wad file. run this:
+sudo apt update && sudo apt install doom-wad-shareware
+Just press y when it askes you. Do not be alarmed if you see a few apps installed on your computer its just doom and a knock of version of doom. The reason these are installed is because the computer thinks they are required to use the wad files but if your here chances are your going to compile the game yourself. You can delete these afterward if you would like however the "woof" version of doom that is installed is very well done and even uses a more modern control layout.
+The next command you will need to run is:
+find / -name "*.wad" 2>/dev/null
+this command will give you a list of the installed wad files on  your system, you want the doom1.wad file, you will need this later to play the game so either copy it to a more memorable location or just come back to this command later.
+Now you will need to actually compile the code. So your next step is to clone this repository onto your computer, for this you will either need to download the zip file or use the command:
+git clone <the url for the project>
+if you dont already have git installed install it with:
+sudo apt install git
+once you have the it downloaded you should see a folder called DOOM, in that folder there is another folder called linuxdoom-1.10 navigate into that folder.
+there will be many files but you now need to install some tools to compile and run this. To do this you will need to run:
+sudo apt install build-essential cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev libsdl1.2-dev xserver-xephyr
+I know thats a lot of commands but its neccesary. At this point you are feeling uncomfterbal with what we have been doing you will probably want to stop here and just download a already made version. This is mostly for those who like a more hands on aproach and already have some experience with the terminal and commands. From this point forward if you dont already have some experience you might be a little bit overwhelmed. Now lets continue.
+You should have everything you need to compile this now but be warned this isnt the most playable port to linux, the audio doesn't function and the way that I handle the old 8-bit color depth results in a small screen size for the game. But if you arn't swayed yet the next thing you need to do is go to the terminal and navigate to the linuxdoom folder I mentioned eairlier. Once in this folder you need to run:
