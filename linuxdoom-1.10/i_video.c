@@ -89,7 +89,7 @@ int		doPointerWarp = POINTER_WARP_COUNTDOWN;
 // to use ....
 static int	multiply=1;
 
-
+static byte doom_palette[256 * 3];
 //
 //  Translates the key currently in X_event
 //
@@ -358,6 +358,11 @@ void I_FinishUpdate (void)
     // UNUSED static unsigned char *bigscreen=0;
 
     // draws little dots on the bottom of the screen
+
+    static uint32_t *xbuffer;
+    xbuffer = malloc(SCREENWIDTH * SCREENHEIGHT * 4);
+
+
     if (devparm)
     {
 
@@ -480,7 +485,7 @@ void I_FinishUpdate (void)
   	Expand4 ((unsigned *)(screens[0]), (double *) (image->data));
     }
 
-    if (doShm)
+    if (!doShm)
     {
 
 	if (!XShmPutImage(	X_display,
@@ -503,6 +508,31 @@ void I_FinishUpdate (void)
     }
     else
     {
+	
+	image = XCreateImage(X_display,
+                     DefaultVisual(X_display, X_screen),
+                     DefaultDepth(X_display, X_screen),
+                     ZPixmap,
+                     0,
+                     (char *)xbuffer,
+                     SCREENWIDTH,
+                     SCREENHEIGHT,
+                     32,
+                     0);
+
+
+	for (int i = 0; i < SCREENWIDTH * SCREENHEIGHT; i++)
+	{
+	    int p = screens[0][i];
+
+	    int r = doom_palette[p*3 + 0];
+	    int g = doom_palette[p*3 + 1];
+    	int b = doom_palette[p*3 + 2];
+
+    	xbuffer[i] = (r << 16) | (g << 8) | b;
+	}
+
+
 
 	// draw the image
 	XPutImage(	X_display,
@@ -581,7 +611,7 @@ void UploadNewPalette(Colormap cmap, byte *palette)
 //
 void I_SetPalette (byte* palette)
 {
-    UploadNewPalette(X_cmap, palette);
+    memcpy(doom_palette, palette, 256 * 3);
 }
 
 
@@ -768,8 +798,6 @@ void I_InitGraphics(void)
 
     // use the default visual 
     X_screen = DefaultScreen(X_display);
-    if (!XMatchVisualInfo(X_display, X_screen, 8, PseudoColor, &X_visualinfo))
-	I_Error("xdoom currently only supports 256-color PseudoColor screens");
     X_visual = X_visualinfo.visual;
 
     // check for the MITSHM extension
@@ -791,32 +819,32 @@ void I_InitGraphics(void)
     fprintf(stderr, "Using MITSHM extension\n");
 
     // create the colormap
-    X_cmap = XCreateColormap(X_display, RootWindow(X_display,
-						   X_screen), X_visual, AllocAll);
-
+    //X_cmap =
     // setup attributes for main window
-    attribmask = CWEventMask | CWColormap | CWBorderPixel;
+    attribmask = CWEventMask | CWBorderPixel;
     attribs.event_mask =
 	KeyPressMask
 	| KeyReleaseMask
 	// | PointerMotionMask | ButtonPressMask | ButtonReleaseMask
 	| ExposureMask;
 
-    attribs.colormap = X_cmap;
     attribs.border_pixel = 0;
+
+    Visual *visual = DefaultVisual(X_display, X_screen);
+    int depth = DefaultDepth(X_display, X_screen);
 
     // create the main window
     X_mainWindow = XCreateWindow(	X_display,
 					RootWindow(X_display, X_screen),
-					x, y,
+					0, 0,
 					X_width, X_height,
 					0, // borderwidth
-					8, // depth
+					depth, // depth
 					InputOutput,
-					X_visual,
-					attribmask,
+					visual,
+					CWEventMask,
 					&attribs );
-    XInstallColormap( X_display, X_cmap );
+
     XDefineCursor(X_display, X_mainWindow,
 		  createnullcursor( X_display, X_mainWindow ) );
 
